@@ -113,32 +113,28 @@ class Request(threading.Thread):
                         }
                     }
         """
-
+        
         parsedRequest = json.loads(request)
 
         method = parsedRequest['method_name']
         args   = parsedRequest['method_args']
-
-        if method == "read":
-            method = 'self.db_server.' + method + '()'
-        elif method == "write":
-            method = 'self.db_server.' + method + '("' + args + '")'
-
-        response = eval(method)
-
-        return response
+        
+        method = getattr(self.db_server, method)
+        if args:
+            response = method(args)
+        else:
+            response = method()
+        message = {
+            "result": response
+        }
+        jsonMessage = json.dumps(message)
+        return jsonMessage
 
     def run(self):
         try:
-            # Treat the socket as a file stream.
-            worker = self.conn.makefile(mode="rw")
-            # Read the request in a serialized form (JSON).
-            request = worker.readline()
-            # Process the request.
+            request = self.conn.recv(1024).decode('UTF-8')
             result = self.process_request(request)
-            # Send the result.
-            worker.write(result + '\n')
-            worker.flush()
+            self.conn.send(bytes(result+'\n', 'UTF-8'))
         except Exception as e:
             # Catch all errors in order to prevent the object from crashing
             # due to bad connections coming from outside.

@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "./client.py", line 137, in <module>
+    command = input()
+KeyboardInterrupt
