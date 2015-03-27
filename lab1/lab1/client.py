@@ -77,16 +77,13 @@ class DatabaseProxy(object):
         }
 
         jsonMessage = json.dumps(message)
-
-        worker = sock.makefile(mode = "rw")
-        worker.write(jsonMessage + '\n')
-        worker.flush()
-
-        response = worker.readlines()
+        sock.send(bytes(jsonMessage+'\n', 'UTF-8'))
+        
+        response = json.loads(sock.recv(1024).decode('UTF-8'))
 
         sock.close()
 
-        return ''.join(response)
+        return response["result"]
     def write(self, fortune):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((self.address, self.port))
@@ -98,14 +95,13 @@ class DatabaseProxy(object):
 
         jsonMessage = json.dumps(message)
 
-        worker = sock.makefile(mode = "rw")
-        worker.write(jsonMessage + '\n')
-        worker.flush()
-
-        response = worker.readlines()
-
+        
+        #worker.write(jsonMessage + '\n')
+        #worker.flush()
+        sock.send(bytes(jsonMessage+'\n', 'UTF-8'))
+        response = json.loads(sock.recv(1024).decode('UTF-8'))["result"]
         sock.close()
-        print(''.join(response))
+        return response
 
 # -----------------------------------------------------------------------------
 # The main program
