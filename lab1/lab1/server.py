@@ -65,9 +65,9 @@ class Server(object):
 
     def read(self):
         self.rwlock.read_acquire()
-        return self.db.read()
+        data = self.db.read()
         self.rwlock.read_release()
-
+        return data
     def write(self, fortune):
         self.rwlock.write_acquire()
         self.db.write(fortune)
