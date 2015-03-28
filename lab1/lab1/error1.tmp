@@ -1,4 +1,12 @@
 Traceback (most recent call last):
   File "./client.py", line 137, in <module>
-    command = input()
-KeyboardInterrupt
+    print(db.read())
+  File "./client.py", line 82, in read
+    response = json.loads(sock.recv(1024).decode('UTF-8'))
+  File "/usr/lib/python3.4/json/__init__.py", line 318, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.4/json/decoder.py", line 343, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.4/json/decoder.py", line 359, in raw_decode
+    obj, end = self.scan_once(s, idx)
+ValueError: Unterminated string starting at: line 1 column 12 (char 11)

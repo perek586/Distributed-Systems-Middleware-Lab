@@ -82,7 +82,7 @@ class Client(orb.Peer):
 # -----------------------------------------------------------------------------
 
 # Initialize the client object.
-local_address = ("127.0.0.1", local_port)
+local_address = ("130.236.77.84", local_port)
 p = Client(local_address, name_service_address, client_type)
 
 print("""\

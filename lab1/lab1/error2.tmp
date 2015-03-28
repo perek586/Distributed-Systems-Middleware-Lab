@@ -1,4 +1,12 @@
 Traceback (most recent call last):
-  File "./client.py", line 137, in <module>
-    command = input()
-KeyboardInterrupt
+  File "./client.py", line 140, in <module>
+    db.write(command[2:].strip())
+  File "./client.py", line 102, in write
+    response = json.loads(sock.recv(1024).decode('UTF-8'))["result"]
+  File "/usr/lib/python3.4/json/__init__.py", line 318, in loads
+    return _default_decoder.decode(s)
+  File "/usr/lib/python3.4/json/decoder.py", line 343, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/lib/python3.4/json/decoder.py", line 361, in raw_decode
+    raise ValueError(errmsg("Expecting value", s, err.value)) from None
+ValueError: Expecting value: line 1 column 1 (char 0)
