@@ -35,7 +35,6 @@ class PeerList(object):
         object has been registered with the name service.
 
         """
-        print("Allt bra nu")
         self.lock.acquire()
         try:
             current_peers = self.owner.name_service.require_all(self.owner.type)
