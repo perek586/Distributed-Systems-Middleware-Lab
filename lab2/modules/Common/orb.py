@@ -66,7 +66,7 @@ class Stub(object):
         error_type = response['error']['name']
         error_value = response['error']['args']
         
-        raise error_type(error_value)
+        raise eval(error_type)(error_value)
         
     def __getattr__(self, attr):
         """Forward call to name over the network at the given address."""
@@ -95,10 +95,10 @@ class Request(threading.Thread):
             message = {
                 'result':response
                 }
-        except:
+        except Exception as e:
             e_type, e_value, e_traceback = sys.exc_info()
             message = {
-                'error' : {'name' : e_type, 'args' : e_value} #I'VE GOT LIFE! YOU'RE ALWAYS ON MY MIND!
+                'error' : {'name' : type(e).__name__, 'args' : e.args} #I'VE GOT LIFE! YOU'RE ALWAYS ON MY MIND!
             }
         self.conn.send(bytes(json.dumps(message)+'\n', 'UTF-8'))
         self.conn.close()

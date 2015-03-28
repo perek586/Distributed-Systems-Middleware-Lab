@@ -62,8 +62,12 @@ class Stub(object):
         sock.close()
         if 'result' in response.keys():
             return response['result']
-        return response['error']
-    
+            
+        error_type = response['error']['name']
+        error_value = response['error']['args']
+        
+        raise eval(error_type)(error_value)
+        
     def __getattr__(self, attr):
         """Forward call to name over the network at the given address."""
         def rmi_call(*args):
@@ -84,11 +88,17 @@ class Request(threading.Thread):
         self.daemon = True
 
     def run(self):
-        message = json.loads(self.conn.recv(1024).decode('UTF-8'))
-        method = getattr(self.owner, message['method'])
-        response = method(*message['args'])
-        message = {
-            'result':response
+        try:
+            message = json.loads(self.conn.recv(1024).decode('UTF-8'))
+            method = getattr(self.owner, message['method'])
+            response = method(*message['args'])
+            message = {
+                'result':response
+                }
+        except Exception as e:
+            e_type, e_value, e_traceback = sys.exc_info()
+            message = {
+                'error' : {'name' : type(e).__name__, 'args' : e.args} #I'VE GOT LIFE! YOU'RE ALWAYS ON MY MIND!
             }
         self.conn.send(bytes(json.dumps(message)+'\n', 'UTF-8'))
         self.conn.close()
@@ -118,7 +128,6 @@ class Skeleton(threading.Thread):
             print("Serving new request from " + addr[0] + ":" + str(addr[1]))
             req = Request(self.owner, conn, addr)
             req.start()
-
 
 
 class Peer:
