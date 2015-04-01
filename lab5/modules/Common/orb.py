@@ -52,13 +52,10 @@ class Stub(object):
             'args': args
         }
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        print("Connected to remote host.")
         sock.connect(self.address)
         print("Calling remote method {0}".format(message['method']))
         sock.send(bytes(json.dumps(message)+'\n', 'UTF-8'))
-        print("Receiving result.")
         response = json.loads(sock.recv(2048).decode('UTF-8'))
-        print("Result received")
         sock.close()
         if 'result' in response.keys():
             return response['result']
@@ -66,8 +63,7 @@ class Stub(object):
         error_type = response['error']['name']
         error_value = response['error']['args']
         
-        #raise eval(error_type)(error_value)
-        print("ERROR ON REMOTE OBJECT SIDE!")
+        raise eval(error_type)(error_value)
     def __getattr__(self, attr):
         """Forward call to name over the network at the given address."""
         def rmi_call(*args):
@@ -96,7 +92,6 @@ class Request(threading.Thread):
             message = {
                 'result':response
                 }
-            print("Sending result {0}".format(message['result']))
         except Exception as e:
             e_type, e_value, e_traceback = sys.exc_info()
             message = {

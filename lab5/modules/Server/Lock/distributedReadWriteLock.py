@@ -21,10 +21,6 @@ class DistributedReadWriteLock(readWriteLock.ReadWriteLock):
         readWriteLock.ReadWriteLock.__init__(self)
         # Create a distributed lock
         self.distributed_lock = distributed_lock
-        #
-        # Your code here.
-        #
-        pass
 
     # Public methods
 

@@ -129,18 +129,13 @@ class Server(orb.Peer):
         
         
         self.drwlock.write_acquire()
-        print("drwlock acquired")
         self.db.write(fortune)
-        print("wrote to local db")
         peers = self.peer_list.get_peers()
-        print("Got list of peers to write to")
         for peer in peers.keys():
             if peer != self.id:
-                print("This will happeen")
                 peers[peer].write_local(fortune)
                 print("Wrote to db of {0}".format(peer))
         self.drwlock.write_release()
-        print("drwlock released")
         return "Successfully wrote to database"
 
     def write_local(self, fortune):
